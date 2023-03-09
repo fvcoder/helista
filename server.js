@@ -4,6 +4,7 @@ const compression = require("compression");
 const morgan = require("morgan");
 const { ExpressPeerServer } = require('peer')
 const { createRequestHandler } = require("@remix-run/express");
+const http = require("http");
 
 const BUILD_DIR = path.join(process.cwd(), "build");
 
@@ -44,16 +45,17 @@ app.all(
 );
 const port = process.env.PORT || 3000;
 
-const server = app.listen(port, () => {
-  console.log(`Express server listening on port ${port}`);
-});
-
+const server = http.createServer(app)
 
 const peerServer = ExpressPeerServer(server, {
 	path: "/myapp",
 });
 
 app.use("/peerjs", peerServer);
+
+server.listen(port, undefined, () => {
+  console.log(`Express server listening on port ${port}`);
+})
 
 function purgeRequireCache() {
   // purge require cache on requests for "server side HMR" this won't let
