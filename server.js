@@ -59,5 +59,3 @@ function purgeRequireCache() {
     }
   }
 }
-
-export default app;
