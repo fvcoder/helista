@@ -1,7 +1,6 @@
 {
   "private": true,
   "sideEffects": false,
-  "type": "module",
   "scripts": {
     "build": "remix build",
     "dev": "npm-run-all build --parallel \"dev:*\"",
@@ -14,6 +13,7 @@
     "@remix-run/express": "^1.14.0",
     "@remix-run/node": "^1.14.0",
     "@remix-run/react": "^1.14.0",
+    "@types/socket.io": "^3.0.2",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
     "express": "^4.18.2",
@@ -21,7 +21,8 @@
     "morgan": "^1.10.0",
     "peer": "^1.0.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "socket.io": "^4.6.1"
   },
   "devDependencies": {
     "@remix-run/dev": "^1.14.0",

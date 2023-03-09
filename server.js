@@ -5,6 +5,8 @@ const morgan = require("morgan");
 const { ExpressPeerServer } = require('peer')
 const { createRequestHandler } = require("@remix-run/express");
 const http = require("http");
+const { Server } = require("socket.io");
+
 
 const BUILD_DIR = path.join(process.cwd(), "build");
 
@@ -49,6 +51,9 @@ const server = http.createServer(app)
 
 const peerServer = ExpressPeerServer(server, {
 	path: "/myapp",
+  'createWebSocketServer': (opts) => {
+    return new Server(opts)
+  }
 });
 
 app.use("/peerjs", peerServer);
