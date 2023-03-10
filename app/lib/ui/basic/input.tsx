@@ -6,6 +6,7 @@ import { HiXCircle } from "react-icons/hi2";
 import { styled } from "../stitches.config";
 
 const InputElement = styled("input", {
+	flex: 1,
 	backgroundColor: "$gray5",
 	color: "$gray11",
 
@@ -38,9 +39,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function inputElem
 	// eslint-disable-next-line react-hooks/rules-of-hooks
 	const r = useRef<HTMLInputElement>();
 
+	const { className, ...argsProps } = props;
+
 	return (
-		<Box>
-			<InputElement ref={r as MutableRefObject<HTMLInputElement>} {...props} />
+		<Box className={className}>
+			<InputElement ref={r as MutableRefObject<HTMLInputElement>} {...argsProps} />
 			<Button
 				onClick={() => {
 					if (r.current) {

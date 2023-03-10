@@ -7,3 +7,10 @@ export { getThemeState } from "./theme";
 // elements
 export { Body } from "./elements/body";
 export { Text } from "./elements/text";
+
+// components
+export { CardHeader } from "./components/card.header";
+
+// pages
+export { HomePage } from "./page/home";
+export { RequireAuth } from "./page/requireAuth";
