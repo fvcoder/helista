@@ -1,10 +1,30 @@
 import OSFontCss from "@fontsource/open-sans/index.css";
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from "@remix-run/react";
+import type { LinksFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import {
+	Links,
+	LiveReload,
+	Meta,
+	Outlet,
+	Scripts,
+	ScrollRestoration,
+	useLoaderData,
+} from "@remix-run/react";
 import { useEffect, useState } from "react";
 
-import { Body, darkTheme, getCssText, getThemeState } from "./lib/ui";
+import type { SessionRes } from "./lib/session/getSesion";
+import { getThemeSession } from "./lib/session/getSesion";
+import { Body, darkTheme } from "./lib/ui";
 import tailwind from "./lib/ui/tailwind.css";
+
+type loaderData = SessionRes;
+export const loader: LoaderFunction = async ({ request }) => {
+	const session = await getThemeSession({ request });
+
+	return json<loaderData>({
+		theme: session.theme,
+	});
+};
 
 export const meta: MetaFunction = () => ({
 	charset: "utf-8",
@@ -20,11 +40,12 @@ export const links: LinksFunction = () => {
 };
 
 export default function App() {
-	const [theme, setTheme] = useState(false);
+	const loader = useLoaderData<loaderData>();
+	const [theme, setTheme] = useState(loader.theme === "light");
 
 	useEffect(() => {
-		setTheme(getThemeState() === "dark");
-	}, []);
+		setTheme(loader.theme === "dark");
+	}, [loader.theme]);
 
 	return (
 		<html lang="es" className={theme ? darkTheme : ""}>
@@ -34,13 +55,8 @@ export default function App() {
 				<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
 				<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 				<Links />
-				<style
-					id="css"
-					suppressHydrationWarning
-					dangerouslySetInnerHTML={{ __html: getCssText() }}
-				></style>
 			</head>
-			<Body>
+			<Body className={theme ? darkTheme : ""}>
 				<div className={darkTheme} />
 				<Outlet />
 				<ScrollRestoration />

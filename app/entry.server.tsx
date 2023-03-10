@@ -11,8 +11,8 @@ export default function handleRequest(
 	remixContext: EntryContext
 ) {
 	const markup = renderToString(<RemixServer context={remixContext} url={request.url} />).replace(
-		/<style id="css"><\/style>/,
-		`<style id="css">${getCssText()}</style>`
+		/<\/head>/,
+		`<style>${getCssText()}</style></head>`
 	);
 
 	responseHeaders.set("Content-Type", "text/html");
