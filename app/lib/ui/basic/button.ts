@@ -15,6 +15,10 @@ export const Button = styled("button", {
 		userSelect: "none",
 		opacity: 0.5,
 	},
+
+	"&:active": {
+		opacity: 0.9,
+	},
 	variants: {
 		color: {
 			primary: {

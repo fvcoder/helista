@@ -1,3 +1,4 @@
+/* eslint-disable unused-imports/no-unused-vars */
 import type { ComponentPropsWithoutRef, MutableRefObject } from "react";
 import { forwardRef, useRef } from "react";
 import { HiXCircle } from "react-icons/hi2";
@@ -33,7 +34,7 @@ const Button = styled("button", {
 
 type InputProps = ComponentPropsWithoutRef<"input">;
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(function inputElement(props) {
+export const Input = forwardRef<HTMLInputElement, InputProps>(function inputElement(props, ref) {
 	// eslint-disable-next-line react-hooks/rules-of-hooks
 	const r = useRef<HTMLInputElement>();
 

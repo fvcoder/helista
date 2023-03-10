@@ -1,8 +1,9 @@
 import OSFontCss from "@fontsource/open-sans/index.css";
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from "@remix-run/react";
+import { useEffect, useState } from "react";
 
-import { getCssText } from "./lib/ui";
+import { Body, darkTheme, getCssText, getThemeState } from "./lib/ui";
 import tailwind from "./lib/ui/tailwind.css";
 
 export const meta: MetaFunction = () => ({
@@ -19,8 +20,14 @@ export const links: LinksFunction = () => {
 };
 
 export default function App() {
+	const [theme, setTheme] = useState(false);
+
+	useEffect(() => {
+		setTheme(getThemeState() === "dark");
+	}, []);
+
 	return (
-		<html lang="en">
+		<html lang="es" className={theme ? darkTheme : ""}>
 			<head>
 				<Meta />
 				<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -33,12 +40,13 @@ export default function App() {
 					dangerouslySetInnerHTML={{ __html: getCssText() }}
 				></style>
 			</head>
-			<body>
+			<Body>
+				<div className={darkTheme} />
 				<Outlet />
 				<ScrollRestoration />
 				<Scripts />
 				<LiveReload />
-			</body>
+			</Body>
 		</html>
 	);
 }
