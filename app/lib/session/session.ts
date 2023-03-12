@@ -8,7 +8,6 @@ export const session = createCookieSessionStorage({
 		secrets: ["SESSION_SECRET"],
 		sameSite: "lax",
 		path: "/",
-		expires: 604800,
 		httpOnly: true,
 	},
 });

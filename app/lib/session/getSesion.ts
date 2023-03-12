@@ -1,7 +1,7 @@
 import { session } from "./session";
 
 // Theme
-enum Theme {
+export enum Theme {
 	light = "light",
 	dark = "dark",
 }

@@ -2,6 +2,8 @@
 
 - [Remix Docs](https://remix.run/docs)
 
+generar key github https://supabase.com/docs/guides/auth/social-login/auth-github
+generar key discord https://supabase.com/docs/guides/auth/social-login/auth-discord
 ## Development
 
 Start the Remix development asset server and the Express server by running:

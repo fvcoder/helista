@@ -1,6 +1,5 @@
 import OSFontCss from "@fontsource/open-sans/index.css";
-import type { LinksFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import {
 	Links,
 	LiveReload,
@@ -12,19 +11,12 @@ import {
 } from "@remix-run/react";
 import { useEffect, useState } from "react";
 
-import type { SessionRes } from "./lib/session/getSesion";
-import { getThemeSession } from "./lib/session/getSesion";
 import { Body, darkTheme } from "./lib/ui";
 import tailwind from "./lib/ui/tailwind.css";
+import type { loaderData } from "./module/auth/loader/root.loader";
+import { RootLoader } from "./module/auth/loader/root.loader";
 
-type loaderData = SessionRes;
-export const loader: LoaderFunction = async ({ request }) => {
-	const session = await getThemeSession({ request });
-
-	return json<loaderData>({
-		theme: session.theme,
-	});
-};
+export const loader = RootLoader;
 
 export const meta: MetaFunction = () => ({
 	charset: "utf-8",
@@ -60,6 +52,15 @@ export default function App() {
 				<div className={darkTheme} />
 				<Outlet />
 				<ScrollRestoration />
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `window.env = { ${Object.entries(loader.env)
+							.map((x) => {
+								return `${x[0]}: "${x[1]}"`;
+							})
+							.toString()} }`,
+					}}
+				></script>
 				<Scripts />
 				<LiveReload />
 			</Body>
