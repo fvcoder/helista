@@ -3,10 +3,10 @@ import { json, redirect } from "@remix-run/node";
 import { useFetcher, useLocation } from "@remix-run/react";
 import { useEffect } from "react";
 
-import { upsetSession } from "~/lib/session";
 import { getSupabase } from "~/lib/supabase";
 import { Text } from "~/lib/ui";
 import { getParameterByName } from "~/lib/util/getParameterByName";
+import { upsetSession } from "~/module/auth";
 
 export const action: ActionFunction = async ({ request }) => {
 	const f = await request.formData();
@@ -29,9 +29,14 @@ export const action: ActionFunction = async ({ request }) => {
 		// eslint-disable-next-line unused-imports/no-unused-vars
 		const { user, ...dataSession } = data.session;
 
+		const userData = await supabase.auth.getUser();
+
 		return redirect(redirectTo, {
 			headers: {
-				"Set-Cookie": await upsetSession({ request, data: { ...dataSession, theme: "light" } }),
+				"Set-Cookie": await upsetSession({
+					request,
+					data: { ...dataSession, theme: "light", userId: userData.data.user?.id ?? "" },
+				}),
 			},
 		});
 	}

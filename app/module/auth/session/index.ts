@@ -1,10 +1,14 @@
+/* eslint-disable camelcase */
 import { createCookieSessionStorage } from "@remix-run/node";
 import type { Session } from "@supabase/supabase-js";
+import dayjs from "dayjs";
 
-import { getEnv } from "../util/getEnv";
+import { getSupabase } from "~/lib/supabase";
+import { getEnv } from "~/lib/util";
 
 export interface dataSession extends Omit<Session, "user"> {
 	theme: "light" | "dark";
+	userId: string;
 }
 
 const sessionStorage = createCookieSessionStorage<{ session: dataSession }>({
@@ -28,7 +32,8 @@ export async function upsetSession({ request, data }: upsetSessionProps): Promis
 	const session = await getSession(request);
 
 	if (data) {
-		session.set("session", data);
+		const expires_at = dayjs().add(data.expires_in, "second").toDate().getTime();
+		session.set("session", { ...data, expires_at });
 	}
 
 	return sessionStorage.commitSession(session);
@@ -49,12 +54,43 @@ async function getAuthSession(request: Request) {
 
 export async function requestVerifySession({
 	request,
-}: Pick<upsetSessionProps, "request">): Promise<dataSession | null> {
+}: Pick<upsetSessionProps, "request">): Promise<
+	| { session: null; setCookie: null }
+	| { session: dataSession; setCookie: string }
+	| { session: dataSession; setCookie: null }
+> {
 	const session = await getAuthSession(request);
 
 	if (!session || !session.access_token || !session.refresh_token) {
-		return null;
+		return { session: null, setCookie: null };
 	}
 
-	return session;
+	if (dayjs(session.expires_at).isBefore(dayjs())) {
+		const supabase = getSupabase(session.access_token);
+		const { data, error } = await supabase.auth.refreshSession({
+			refresh_token: String(session.refresh_token),
+		});
+
+		if (error) {
+			return { session: null, setCookie: null };
+		}
+
+		const userData = await supabase.auth.getUser();
+		// eslint-disable-next-line unused-imports/no-unused-vars
+		const { user, ...dataSession } = data.session as Session;
+
+		return {
+			session,
+			setCookie: await upsetSession({
+				request,
+				data: {
+					...dataSession,
+					userId: userData.data.user?.id ?? "",
+					theme: "light",
+				},
+			}),
+		};
+	}
+
+	return { session, setCookie: null };
 }

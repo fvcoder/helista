@@ -1,5 +1,6 @@
 import OSFontCss from "@fontsource/open-sans/index.css";
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import {
 	Links,
 	LiveReload,
@@ -11,12 +12,29 @@ import {
 } from "@remix-run/react";
 import { useEffect, useState } from "react";
 
+import type { Theme } from "./lib/ui";
 import { Body, darkTheme } from "./lib/ui";
 import tailwind from "./lib/ui/tailwind.css";
-import type { loaderData } from "./module/auth/loader/root.loader";
-import { RootLoader } from "./module/auth/loader/root.loader";
+import { getEnv } from "./lib/util";
+import { requestVerifySession } from "./module/auth";
 
-export const loader = RootLoader;
+interface loaderData {
+	theme: Theme;
+	env: Record<string, string>;
+}
+
+export const loader: LoaderFunction = async ({ request }) => {
+	const { session } = await requestVerifySession({ request });
+
+	return json<loaderData>({
+		theme: (session?.theme ?? "light") as Theme,
+		env: {
+			SUPABASE_URL: getEnv("SUPABASE_URL"),
+			SUPABASE_ANON_KEY: getEnv("SUPABASE_ANON_KEY"),
+			BASE_URL: new URL(request.url).origin,
+		},
+	});
+};
 
 export const meta: MetaFunction = () => ({
 	charset: "utf-8",

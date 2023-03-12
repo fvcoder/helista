@@ -1,10 +1,24 @@
+import type { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { json } from "react-router";
 
 import { CardHeader, HomePage, RequireAuth } from "~/lib/ui";
-import type { indexLoaderI } from "~/module/auth/loader/index.loader";
-import { indexLoader } from "~/module/auth/loader/index.loader";
+import type { dataSession } from "~/module/auth";
+import { requestVerifySession } from "~/module/auth";
 
-export const loader = indexLoader;
+export interface indexLoaderI {
+	session: dataSession | null;
+	userId: string;
+}
+
+export const loader: LoaderFunction = async ({ request }) => {
+	const { session } = await requestVerifySession({ request });
+
+	return json<indexLoaderI>({
+		session,
+		userId: session?.userId ?? "",
+	});
+};
 
 export default function Index() {
 	const loader = useLoaderData<indexLoaderI>();
