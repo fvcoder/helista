@@ -1,6 +1,6 @@
 create table room (
   id uuid default uuid_generate_v4() primary key,
-  owner uuid,
+  owner uuid references auth.users not null,
   created_at timestamp default now()
 );
 
