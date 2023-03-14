@@ -6,6 +6,7 @@ export const { styled, getCssText, createTheme } = createStitches({
 		colors: {
 			...gray,
 			...green,
+			grayDark2: grayDark.gray2,
 		},
 	},
 });
