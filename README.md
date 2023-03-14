@@ -1,53 +1,32 @@
-# Welcome to Remix!
+# Helista
 
-- [Remix Docs](https://remix.run/docs)
+Una aplicacion de videoConferencias
 
-generar key github https://supabase.com/docs/guides/auth/social-login/auth-github
-generar key discord https://supabase.com/docs/guides/auth/social-login/auth-discord
-## Development
-
-Start the Remix development asset server and the Express server by running:
-
-```sh
-npm run dev
-```
-
-This starts your app in development mode, which will purge the server require cache when Remix rebuilds assets so you don't need a process manager restarting the express server.
+## Stack
+- [Remix](https://remix.run/)
+- [Supabase](https://supabase.com/)
 
 ## Deployment
-
-First, build your app for production:
-
-```sh
-npm run build
+Esta aplicacion esta pensada en desplegarse en varios tipos de servidores, ligero y facil de desplegar
+1. Crea uproyecto en [Supabase](https://app.supabase.com/)
+2. Configura las credenciales para la autenticacion con: [Discord](https://supabase.com/docs/guides/auth/social-login/auth-discord) y [Github](https://supabase.com/docs/guides/auth/social-login/auth-github)
+3. Ejecuta [database.sql](./database.sql), en Supabase.
+4. Configura las variables de entorno
 ```
+BASE_URL=http://localhost:3000
 
-Then run the app in production mode:
+SUPABASE_URL=
+SUPABASE_ANON_KEY=
 
-```sh
-npm start
+COOKIE_SECRET=s3cr3t
 ```
+4. Despliga con:
+    - Node `npm install && npm run build && npm start` 
+    - Docker `docker up`
 
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying express applications you should be right at home just make sure to deploy the output of `remix build`
-
-- `build/`
-- `public/build/`
-
-### Using a Template
-
-When you ran `npx create-remix@latest` there were a few choices for hosting. You can run that again to create a new project, then copy over your `app/` folder to the new project that's pre-configured for your target server.
-
+## Development
+1. Copeea [.env.copy](./.env.copy) a [.env](./.env) y configura el [entorno de ejecucion](#deployment)
+2. Inicia en modo desarrollo
 ```sh
-cd ..
-# create a new project, and pick a pre-configured host
-npx create-remix@latest
-cd my-new-remix-app
-# remove the new project's app (not the old one!)
-rm -rf app
-# copy your app over
-cp -R ../my-old-remix-app/app app
+npm run dev
 ```
